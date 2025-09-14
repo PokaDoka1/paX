@@ -1,17 +1,20 @@
 import os
 from flask import Flask, Response, request
+from flask_cors import CORS, cross_origin
 import cohere
 from dotenv import load_dotenv
 
 load_dotenv()
 
 app = Flask(__name__)
+cors = CORS(app)
 
 co = cohere.ClientV2(
     os.environ["COHERE_API_KEY"]
 )
 
 @app.route("/chat", methods=["POST"])
+@cross_origin()
 def chat():
     messages = request.json["messages"]
 

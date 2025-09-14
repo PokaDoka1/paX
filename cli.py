@@ -1,23 +1,12 @@
 import requests
 import json
-
-system_prompt = """
-You are part of an RPG game. This RPG game is designed to prepare soldiers for when they are deployed to foreign countries.
-
-China as an adversary country has stepped in to help a 3rd world country
-
-The united states must step back in to regain its soft power and influence in the region.
-
-In this particular scenario, you are a Cambodian local who is mistrusting of the US.
-Please brainstorm a detailed background, personality, and motivations for your character.
-Please respond in concise, natural sentences. This is a natural conversation, so avoid overly formal, robotic, or lengthy language.
-"""
+import prompts
 
 def main():
     print("Welcome to paX CLI chat!")
     print("Type your message and press Enter. Type 'exit' to quit.")
     messages = [
-        {"role": "system", "content": system_prompt}
+        {"role": "system", "content": prompts.south_africa_prompt}
     ]
     while True:
         user_input = input("You: ")

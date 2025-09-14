@@ -27,15 +27,19 @@ def main():
         messages.append({"role": "user", "content": user_input})
         payload = {"messages": messages}
         try:
-            response = requests.post(
+            assistant_reply = ""
+            print(f"Agent: ", end="", flush=True)
+            with requests.post(
                 "http://localhost:8000/chat",
                 headers={"Content-Type": "application/json"},
-                data=json.dumps(payload)
-            )
-            response.raise_for_status()
-            data = response.json()
-            assistant_reply = data.get("response", "(No response)")
-            print(f"Agent: {assistant_reply}")
+                data=json.dumps(payload),
+                stream=True,
+            ) as r:
+                for line in r.iter_content(chunk_size=None, decode_unicode=True):
+                    if line:
+                        assistant_reply += line
+                        print(line, end="", flush=True)
+            print()
             messages.append({"role": "assistant", "content": assistant_reply})
         except Exception as e:
             print(f"Error: {e}")

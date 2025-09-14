@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request
+from flask import Flask, Response, request
 import cohere
 from dotenv import load_dotenv
 
@@ -15,12 +15,17 @@ co = cohere.ClientV2(
 def chat():
     messages = request.json["messages"]
 
-    response = co.chat(
-        model="command-a-03-2025",
-        messages=messages,
-    )
+    def generate():
+        response = co.chat_stream(
+            model="command-a-03-2025",
+            messages=messages,
+        )
 
-    return {"response": response.message.content[0].text}
+        for chunk in response:
+            if chunk and chunk.type == "content-delta":
+                yield chunk.delta.message.content.text
+
+    return Response(generate(), mimetype="text/plain")
 
 if __name__ == "__main__":
     print("starting")
